@@ -20,7 +20,7 @@ jobs:
       - name: Set up Common Lisp environment
         uses: 40ants/setup-lisp@v4
         with:
-          asdf-system: lys-python
+          lisp: ${{ matrix.lisp }}
 
       - name: Set up Python
         uses: actions/setup-python@v5

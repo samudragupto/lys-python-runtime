@@ -183,6 +183,17 @@ Supported commands:
 - `:bridge` - Display CPython C-API connection health and foreign object references.
 - `:quit` - Terminate the REPL session cleanly.
 
+### Visual Demonstration
+
+#### REPL Interactive Startup & Bridge Initialization
+![LYSPYTHON REPL Startup](docs/screenshots/repl-startup.png)
+
+#### Step-by-Step Macro Tracing and AST Inspection
+![LYSPYTHON Macro Trace and AST Inspection](docs/screenshots/repl-macro-trace.png)
+
+#### Automated Unit, Integration, and Research Test Suite
+![LYSPYTHON Automated Test Suite Execution](docs/screenshots/test-suite-pass.png)
+
 ---
 
 ## 12. Macro Expansion Inspector

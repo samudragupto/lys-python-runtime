@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use or reference LYSPYTHON in your academic research, please cite it as below."
+title: "LYSPYTHON: A Lisp-Macro-Defined Python Runtime & REPL"
+authors:
+  - family-names: "LYSPYTHON Contributors"
+    given-names: "Research Engineering Team"
+    affiliation: "Programming Language Systems Research Group"
+abstract: >
+  LYSPYTHON is a meta-language runtime architecture that inverts the traditional
+  relationship between Common Lisp and Python. Rather than embedding Lisp within
+  Python or invoking foreign CPython procedures from Lisp, LYSPYTHON establishes
+  Common Lisp as an active meta-linguistic definition layer. User-written Python
+  surface syntax is ingested into a structured surface abstract syntax tree (AST),
+  transformed and desugared via user-extensible Common Lisp macros, lowered into a
+  canonical intermediate AST, and evaluated on a standard CPython execution engine
+  via C-API bindings. This architecture permits live, interactive redefinition of
+  imperative syntax, semantics, and control structures at runtime.
+repository-code: "https://github.com/samudragupto/lys-python-runtime"
+url: "https://github.com/samudragupto/lys-python-runtime"
+type: software
+license: Apache-2.0
+version: "0.1.0-alpha"
+date-released: "2026-10-02"
+keywords:
+  - "programming-languages"
+  - "macro-systems"
+  - "common-lisp"
+  - "python-runtime"
+  - "metaprogramming"
+  - "language-workbenches"
+  - "ast-transformations"
+  - "compiler-architecture"
+  - "repl"

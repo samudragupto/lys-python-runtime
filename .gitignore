@@ -1,0 +1,89 @@
+# Common Lisp compiled files and artifacts
+*.fasl
+*.dx64fsl
+*.lx64fsl
+*.wx64fsl
+*.x86f
+*.sparcf
+*.fas
+*.lib
+*.so
+*.dylib
+*.dll
+*.dylib.*
+*.a
+*.o
+
+# Common Lisp implementations
+.sbcl/
+.ccl/
+.clisp/
+.ecl/
+.abcl/
+
+# Quicklisp and ASDF local caches
+.quicklisp/
+.asdf/
+quicklisp/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Tree-sitter binaries and build artifacts
+tree-sitter-python/
+*.so
+*.dylib
+*.dll
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.#*
+\#*\#
+.DS_Store
+Thumbs.db
+
+# Test coverage and profiling
+.coverage
+htmlcov/
+.pytest_cache/
+coverage.xml
+profile.out
+
+# Runtime logs and state
+*.log
+repl_history.lys
+.lys_history
+scratch/
+tmp/

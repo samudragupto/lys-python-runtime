@@ -1,0 +1,38 @@
+flowchart TD
+    subgraph UserInterface["REPL Shell & Prompt Loop"]
+        IN["User Line Input: lys[mode]>"] --> DISPATCH{"Input Type?"}
+    end
+
+    subgraph CommandSystem["REPL Command Subsystem"]
+        DISPATCH -- ":help" --> CMD_HELP["Print Command & Help Reference"]
+        DISPATCH -- ":mode <m>" --> CMD_MODE["Switch *runtime-mode*<br/>(:normal, :macro-trace, :ast-trace, :verbose, :research)"]
+        DISPATCH -- ":expand <expr>" --> CMD_EXPAND["Single/Full Expansion Preview"]
+        DISPATCH -- ":inspect <expr>" --> CMD_INSPECT["Launch Macro Expansion Inspector"]
+        DISPATCH -- ":ast <expr>" --> CMD_AST["Display Surface & Canonical AST Views"]
+        DISPATCH -- ":macros" --> CMD_MACROS["Enumerate Registered Macro Priorities"]
+        DISPATCH -- ":bridge" --> CMD_BRIDGE["Check CPython Foreign Connection Health"]
+        DISPATCH -- ":reset" --> CMD_RESET["Reset Kernel to Bootstrap State"]
+        DISPATCH -- ":quit" --> CMD_QUIT["Shutdown Bridge & Terminate"]
+    end
+
+    subgraph EvalSystem["Pipeline Evaluation Path"]
+        DISPATCH -- "Surface Code" --> EVAL["eval-surface-code (src/runtime/eval.lisp)"]
+        EVAL --> PARSE["Parse to Surface AST"]
+        PARSE --> EXPAND["Fixed-Point Macro Expansion"]
+        EXPAND --> DESUGAR["Canonical Desugaring"]
+        DESUGAR --> SEM["Semantic Scope Analysis"]
+        SEM --> LOWER["Lower to CPython IR"]
+        LOWER --> BRIDGE["Execute via CPython Foreign Bridge"]
+        BRIDGE --> OUT["Capture Result, Stdout & Errors"]
+    end
+
+    subgraph InspectorSystem["Expansion Inspector & Introspection"]
+        CMD_INSPECT --> STEP_TRACE["Step-by-Step Visualizer"]
+        EXPAND -.-> STEP_TRACE
+        STEP_TRACE --> DIFF_VIEW["Render Diff: S-AST -> Steps -> C-AST -> Lowered"]
+    end
+
+    subgraph HistorySystem["Session Persistence"]
+        OUT --> HIST["record-history-entry (*repl-history*)"]
+        HIST --> FILE[".lys_history Persistence"]
+    end

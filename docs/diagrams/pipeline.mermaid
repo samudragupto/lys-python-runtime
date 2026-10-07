@@ -1,0 +1,32 @@
+flowchart TD
+    subgraph ObjectLanguage["Object-Language Tier: Python Surface Syntax"]
+        SRC["User Python Surface Code"] --> PARSER["Reader / Lexer / Tree-sitter Ingestion"]
+        PARSER --> SAST["Surface AST (S-AST)"]
+    end
+
+    subgraph MetaLanguage["Meta-Language Tier: Common Lisp Definitional Kernel"]
+        SAST --> REG["Lisp Macro Registry (define-python-macro)"]
+        REG --> ENG["Lisp Macro Expansion Engine"]
+        ENG --> FIX["macroexpand-fixpoint Loop"]
+        FIX -- "Recursive Expansion & Cycle Guard" --> ENG
+        FIX --> DESUGAR["Desugaring & Normalization Layer"]
+        DESUGAR --> CAST["Canonical AST (C-AST)"]
+        CAST --> SEM["Semantic Scope & Hygiene Analyzer"]
+        SEM --> LOWER["AST Lowering Subsystem"]
+    end
+
+    subgraph ForeignBoundary["Foreign Interface: CFFI Bridge"]
+        LOWER --> BRIDGE["CPython C-API Foreign Execution Bridge"]
+        BRIDGE --> REFCNT["Foreign PyObject Reference Lifetime Manager"]
+    end
+
+    subgraph TargetVM["Execution Target: CPython Virtual Machine"]
+        REFCNT --> VM["CPython VM & Runtime Evaluator"]
+        VM --> RES["Evaluation Result & Namespace Updates"]
+    end
+
+    subgraph Workbench["Interactive Tooling & Introspection"]
+        RES --> REPL["LYSPYTHON REPL Display"]
+        FIX -.-> TRACE["Expansion Trace Inspector"]
+        CAST -.-> ASTINSP["Canonical AST Inspector"]
+    end

@@ -1,0 +1,55 @@
+flowchart TD
+    subgraph Layer1["Layer 1: User Python Surface Source"]
+        L1["Source Input: Python Code Statements or S-Expressions"]
+    end
+
+    subgraph Layer2["Layer 2: Lexical Ingestion & Reader"]
+        L2["src/reader/tokens.lisp & src/reader/parser.lisp (Tree-sitter Adapter)"]
+    end
+
+    subgraph Layer3["Layer 3: Surface AST Representation"]
+        L3["src/ast/surface.lisp (ast-surface-node Hierarchy)"]
+    end
+
+    subgraph Layer4["Layer 4: Macro Definition & Registry"]
+        L4["src/macros/registry.lisp (define-python-macro, Priority Registry)"]
+    end
+
+    subgraph Layer5["Layer 5: Lisp Macro Expansion Engine"]
+        L5["src/macros/engine.lisp (macroexpand-1, macroexpand-fixpoint, Cycle Guard)"]
+    end
+
+    subgraph Layer6["Layer 6: Canonical Desugaring & Normalization"]
+        L6["src/transform/desugar.lisp & src/ast/canonical.lisp (Minimal C-AST)"]
+    end
+
+    subgraph Layer7["Layer 7: Semantic Analysis & Hygiene"]
+        L7["src/semantics/analyzer.lisp (Lexical Scopes, Bindings, Shadowing Guard)"]
+    end
+
+    subgraph Layer8["Layer 8: AST Lowering Layer"]
+        L8["src/lowering/lower.lisp (Translates C-AST to CPython IR)"]
+    end
+
+    subgraph Layer9["Layer 9: CPython C-API Foreign Bridge"]
+        L9["src/bridge/cpython.lisp & src/bridge/python_bridge.py (CFFI & PyObject*)"]
+    end
+
+    subgraph Layer10["Layer 10: Runtime Environment & Evaluation"]
+        L10["src/env/namespaces.lisp & src/runtime/eval.lisp (Frame Stacks & Evaluator)"]
+    end
+
+    subgraph Layer11["Layer 11: Interactive REPL & Tooling"]
+        L11["src/repl/core.lisp, src/repl/inspector.lisp & src/lsp/foundation.lisp"]
+    end
+
+    L1 --> L2
+    L2 --> L3
+    L3 --> L5
+    L4 -.-> L5
+    L5 --> L6
+    L6 --> L7
+    L7 --> L8
+    L8 --> L9
+    L9 --> L10
+    L10 --> L11

@@ -1,0 +1,41 @@
+name: Feature or Capability Proposal
+description: Propose an architectural extension, new built-in macro, or tooling enhancement.
+title: "[FEAT]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Propose a capability or enhancement to LYSPYTHON.
+  - type: dropdown
+    id: category
+    attributes:
+      label: Capability Domain
+      options:
+        - Built-in Macro Expansion
+        - AST Representation
+        - Lowering Optimization
+        - REPL / Inspector Interface
+        - CPython Bridge Enhancement
+        - Tooling / Tree-sitter / LSP
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Limitation
+      description: What limitation in the current runtime or language definition does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution or Design
+      description: Detailed engineering specification of the suggested feature.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative implementations or patterns evaluated.

@@ -1,0 +1,39 @@
+name: Programming Language Research Proposal
+description: Propose an academic experiment, formal semantic redesign, or meta-language investigation.
+title: "[RESEARCH]: "
+labels: ["research", "design"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to propose a formal research experiment, macro-level semantic redefinition, or comparative compiler study.
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Research Hypothesis
+      description: What programming language design thesis or semantic property is being tested?
+      placeholder: |
+        e.g., By redefining Python function definitions to synthesize pre/post condition contracts via Common Lisp macros, runtime contract checking can be enforced with zero CPython interpreter modification.
+    validations:
+      required: true
+  - type: textarea
+    id: theoretical_foundation
+    attributes:
+      label: Theoretical Background & Literature
+      description: Cite relevant concepts from macro systems, meta-circular evaluation, or language workbenches.
+    validations:
+      required: true
+  - type: textarea
+    id: methodology
+    attributes:
+      label: Experimental Methodology
+      description: Step-by-step description of the proposed macro implementation, AST transformations, and evaluation metrics.
+    validations:
+      required: true
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: Expected Research Deliverables
+      description: Benchmark scripts, reproducible example in examples/semantic-redesigns/, or whitepaper draft.
+    validations:
+      required: true

@@ -1,0 +1,35 @@
+name: Architecture and Hierarchy Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-architecture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate Module Hierarchy
+        run: |
+          python -c "import os, sys
+          expected_dirs = [
+              'src/core', 'src/ast', 'src/macros', 'src/transform', 'src/semantics',
+              'src/lowering', 'src/bridge', 'src/env', 'src/runtime', 'src/repl',
+              'src/cli', 'src/lsp', 'src/config', 'src/utils', 'src/extensions',
+              'docs/design', 'docs/theory', 'docs/diagrams', 'docs/notes',
+              'examples/basic', 'examples/macro-experiments', 'examples/semantic-redesigns',
+              'tests/unit', 'tests/integration', 'tests/research'
+          ]
+          missing = [d for d in expected_dirs if not os.path.isdir(d)]
+          if missing:
+              sys.exit(f'Architecture violation: Missing directories: {missing}')
+          print('Directory hierarchy validated successfully.')"

@@ -1,0 +1,59 @@
+name: Defect or Compiler Crash Report
+description: Report a bug, crash, incorrect macro expansion, or FFI fault in LYSPYTHON.
+title: "[BUG]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for submitting a bug report. Please provide exact reproduction steps and system environment details.
+  - type: dropdown
+    id: subsystem
+    attributes:
+      label: Subsystem
+      description: Identify the component where the issue occurs.
+      options:
+        - Parser / Lexer
+        - Surface AST
+        - Macro Registry / Engine
+        - Canonical AST / Desugarer
+        - Semantic Scope Analyzer
+        - Lowering Layer
+        - CPython CFFI Bridge
+        - Interactive REPL
+        - LSP Foundation
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: OS version, SBCL version, CPython version, and CFFI version.
+      placeholder: |
+        OS: Linux x86_64 / Windows 11
+        SBCL: 2.3.0
+        Python: 3.11.4
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Defect Description
+      description: Clear and concise technical description of what failed.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal Reproducible Code
+      description: Provide the smallest Python or Lisp snippet reproducing the problem.
+      render: lisp
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs Observed Behavior
+      description: Explain what the compiler or runtime should have produced vs what occurred.
+    validations:
+      required: true

@@ -1,0 +1,44 @@
+flowchart TD
+    subgraph SurfaceAST["Surface AST: Object-Language Concrete Forms"]
+        SA_FOR["ast-for (target, iterable, body, else)"]
+        SA_WITH["ast-with (items, body)"]
+        SA_AUG["ast-aug-assign (op, target, value)"]
+        SA_DEF["ast-def (name, params, body, decorators)"]
+        SA_IF["ast-if (condition, then, else)"]
+    end
+
+    subgraph MacroRewriting["Common Lisp Macro Expansion Layer"]
+        M_FOR["Macro Rewrite: for -> iterator allocation + while loop"]
+        M_WITH["Macro Rewrite: with -> __enter__ + try/finally __exit__"]
+        M_AUG["Macro Rewrite: x += y -> x = x + y"]
+        M_DEF["Macro Rewrite: def -> instrumentation + binding"]
+        M_IF["Macro Rewrite: if -> condition interceptor"]
+
+        SA_FOR --> M_FOR
+        SA_WITH --> M_WITH
+        SA_AUG --> M_AUG
+        SA_DEF --> M_DEF
+        SA_IF --> M_IF
+    end
+
+    subgraph CanonicalAST["Canonical AST: Minimal Orthogonal IR"]
+        CA_WHILE["c-while (condition, body)"]
+        CA_TRY["c-try-finally (try-body, finally-body)"]
+        CA_ASSIGN["c-assign (target, value)"]
+        CA_DEF["c-def (name, params, body)"]
+        CA_IF["c-if (condition, then, else)"]
+
+        M_FOR --> CA_WHILE
+        M_WITH --> CA_TRY
+        M_AUG --> CA_ASSIGN
+        M_DEF --> CA_DEF
+        M_IF --> CA_IF
+    end
+
+    subgraph Lowering["Target Lowering"]
+        CA_WHILE --> LOWER["Lowering Engine (C-AST to PyObject IR)"]
+        CA_TRY --> LOWER
+        CA_ASSIGN --> LOWER
+        CA_DEF --> LOWER
+        CA_IF --> LOWER
+    end

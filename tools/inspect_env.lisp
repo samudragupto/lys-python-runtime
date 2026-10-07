@@ -1,0 +1,8 @@
+(format t "USER-HOMEDIR: ~S~%" (user-homedir-pathname))
+(format t "CONF DIRS: ~S~%" (asdf/source-registry:user-source-registry-directory))
+(asdf:initialize-source-registry)
+(format t "QL LOCAL PROJECTS: ~S~%" ql:*local-project-directories*)
+(ql:register-local-projects)
+(format t "QL FIND SYSTEM LYS-PYTHON: ~S~%" (ql:where-is-system :lys-python))
+(format t "QL FIND SYSTEM LYSPYTHON: ~S~%" (ql:where-is-system :lyspython))
+(sb-ext:exit :code 0)

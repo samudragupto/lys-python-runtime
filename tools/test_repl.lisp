@@ -1,0 +1,6 @@
+(ql:quickload :lys-python)
+(with-input-from-string (s (format nil "10 + 20~%:quit~%"))
+  (let ((*standard-input* s))
+    (lys-python.repl:start-repl)))
+(format t "REPL TEST PASSED!~%")
+(sb-ext:exit :code 0)

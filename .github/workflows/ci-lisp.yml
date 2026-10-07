@@ -1,0 +1,42 @@
+name: Common Lisp CI & Compilation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lisp: [sbcl-bin]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Common Lisp environment
+        uses: 40ants/setup-lisp@v4
+        with:
+          asdf-system: lys-python
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verify ASDF System Loading
+        run: |
+          ros run --eval '(require :asdf)' \
+                  --eval '(asdf:load-asd (truename "lyspython.asd"))' \
+                  --eval '(asdf:load-system :lys-python)' \
+                  --eval '(uiop:quit 0)'
+
+      - name: Run Test Suite
+        run: |
+          ros run --eval '(require :asdf)' \
+                  --eval '(asdf:load-asd (truename "lyspython.asd"))' \
+                  --eval '(asdf:test-system :lys-python)' \
+                  --eval '(uiop:quit 0)'

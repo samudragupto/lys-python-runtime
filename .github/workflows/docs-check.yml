@@ -1,0 +1,46 @@
+name: Documentation & Link Verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verify Documentation Files Presence
+        run: |
+          python -c "import os, sys
+          required = ['README.md', 'ARCHITECTURE.md', 'RESEARCH.md', 'ROADMAP.md', 'CONTRIBUTING.md', 'SECURITY.md', 'CITATION.cff']
+          missing = [f for f in required if not os.path.isfile(f)]
+          if missing:
+              sys.exit(f'Missing required documentation files: {missing}')
+          print('All core documentation files present.')"
+
+      - name: Verify Zero Emojis Policy
+        run: |
+          python -c "import os, sys, re
+          emoji_pattern = re.compile(r'[\U00010000-\U0010ffff]', flags=re.UNICODE)
+          violating_files = []
+          for root, _, files in os.walk('.'):
+              if any(p in root for p in ['.git', '.venv', '__pycache__']):
+                  continue
+              for f in files:
+                  if f.endswith(('.md', '.lisp', '.asd', '.py', '.yml', '.yaml')):
+                      p = os.path.join(root, f)
+                      with open(p, 'r', encoding='utf-8', errors='ignore') as fp:
+                          if emoji_pattern.search(fp.read()):
+                              violating_files.append(p)
+          if violating_files:
+              sys.exit(f'Policy violation: Emojis detected in: {violating_files}')
+          print('Zero-emojis policy check passed.')"

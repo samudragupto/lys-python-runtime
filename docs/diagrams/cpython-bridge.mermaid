@@ -1,0 +1,35 @@
+flowchart TB
+    subgraph LispHost["Common Lisp Host Subsystem"]
+        LIR["Lowered Canonical IR (lowered-ir)"]
+        EVAL_FN["eval-in-cpython (src/bridge/cpython.lisp)"]
+        LIR --> EVAL_FN
+    end
+
+    subgraph CFFIBoundary["CFFI Foreign Function Interface Boundary"]
+        EVAL_FN --> CFFI_LAYER["CFFI libpython3 Wrapper"]
+        CFFI_LAYER --> POINTER["pyobject-handle Structure"]
+        POINTER --> REFCOUNT["Foreign Reference Tracking (Py_INCREF / Py_DECREF)"]
+        REFCOUNT --> CLEANUP["GC Finalizers & Unwind-Protect Guards"]
+    end
+
+    subgraph ErrorHandling["Exception Translation Layer"]
+        CFFI_LAYER --> ERR_CHECK{"PyErr_Occurred()?"}
+        ERR_CHECK -- Yes --> ERR_FETCH["PyErr_Fetch Exception & Traceback"]
+        ERR_FETCH --> LISP_COND["Signal Common Lisp Condition: cpython-bridge-error"]
+        ERR_CHECK -- No --> VAL_EXTRACT["Extract PyObject Return Value"]
+    end
+
+    subgraph PythonHarness["Companion Execution Harness (python_bridge.py)"]
+        CFFI_LAYER <--> HARNESS["LysPythonBridge Execution Singleton"]
+        HARNESS --> RUNTIME_HELPERS["Runtime Primitives (__lys_has_next__, __lys_get_next__)"]
+        HARNESS --> STDOUT_CAP["sys.stdout / sys.stderr Capture"]
+    end
+
+    subgraph CPythonVM["Target CPython Virtual Machine"]
+        HARNESS --> VM_EVAL["CPython Bytecode Compiler & Interpreter"]
+        VM_EVAL --> GLOBALS["Persistent Module Globals: __lys_main__"]
+        VM_EVAL --> NATIVE_EXT["Native C-Extensions: NumPy, SciPy, PyTorch"]
+    end
+
+    VAL_EXTRACT --> RES_OBJ["Structured Result: cpython-eval-result"]
+    STDOUT_CAP --> RES_OBJ

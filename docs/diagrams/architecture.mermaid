@@ -1,0 +1,73 @@
+flowchart TB
+    subgraph HostSystem["Host Meta-System: Common Lisp (SBCL)"]
+        subgraph KernelTier["Kernel, Config & Diagnostics"]
+            KERN["Runtime Kernel (src/core/kernel.lisp)"]
+            CONFIG["Configuration Subsystem (src/config/)"]
+            ERR["Error Conditions (src/utils/errors.lisp)"]
+            LOG["Diagnostic Logger (src/utils/logging.lisp)"]
+        end
+
+        subgraph IngestionTier["Surface Ingestion & S-AST"]
+            TOK["Tokens & Lexer (src/reader/tokens.lisp)"]
+            RDR["Parser Layer (src/reader/parser.lisp)"]
+            SAST["Surface AST Model (src/ast/surface.lisp)"]
+            TOK --> RDR --> SAST
+        end
+
+        subgraph MacroTier["Lisp Macro Definitional Core"]
+            MREG["Macro Registry (src/macros/registry.lisp)"]
+            MENG["Expansion Engine (src/macros/engine.lisp)"]
+            MBUILTIN["Built-in Macros (src/macros/builtin.lisp)"]
+            MBUILTIN --> MREG
+            MREG <--> MENG
+        end
+
+        subgraph CanonicalTier["Canonical Transformation & Semantics"]
+            DESUGAR["Desugaring Layer (src/transform/desugar.lisp)"]
+            CAST["Canonical AST Model (src/ast/canonical.lisp)"]
+            SEM["Semantic Scope Analyzer (src/semantics/analyzer.lisp)"]
+            DESUGAR --> CAST --> SEM
+        end
+
+        subgraph LoweringTier["Lowering & Environment"]
+            LOWER["Lowering Engine (src/lowering/lower.lisp)"]
+            ENV["Lexical Namespaces (src/env/namespaces.lisp)"]
+            EVAL["Unified Evaluator (src/runtime/eval.lisp)"]
+            LOWER --> EVAL
+            ENV --> EVAL
+        end
+
+        subgraph ToolingTier["Interactive Tools & LSP"]
+            REPL["Interactive REPL (src/repl/core.lisp)"]
+            HIST["REPL History (src/repl/history.lisp)"]
+            INSP["Expansion Inspector (src/repl/inspector.lisp)"]
+            LSP["LSP Foundation (src/lsp/foundation.lisp)"]
+            SANDBOX["Macro Sandbox (src/extensions/sandbox.lisp)"]
+        end
+    end
+
+    subgraph ForeignBoundary["Foreign Boundary: CFFI Bridge"]
+        CFFI_API["libpython3 C-API Bindings (src/bridge/cpython.lisp)"]
+        PY_HARNESS["Python Bridge Harness (src/bridge/python_bridge.py)"]
+        CFFI_API <--> PY_HARNESS
+    end
+
+    subgraph TargetVM["Execution Target: CPython Virtual Machine"]
+        PY_OBJS["PyObject Allocation & Ref Counting"]
+        PY_INTERP["CPython Bytecode Interpreter"]
+        PY_ECOSYS["Native Ecosystem (NumPy, SciPy, PyTorch)"]
+        PY_OBJS --> PY_INTERP --> PY_ECOSYS
+    end
+
+    SAST --> MENG
+    MENG --> DESUGAR
+    SEM --> LOWER
+    EVAL --> CFFI_API
+    PY_HARNESS --> PY_OBJS
+
+    KERN --> REPL
+    REPL --> INSP
+    REPL --> HIST
+    MENG -.-> INSP
+    CAST -.-> LSP
+    MREG -.-> SANDBOX

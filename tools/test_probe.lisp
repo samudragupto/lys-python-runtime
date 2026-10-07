@@ -1,0 +1,7 @@
+(asdf:clear-configuration)
+(asdf:clear-source-registry)
+(asdf:initialize-source-registry)
+(format t "PROBE-ASD: ~S~%" (probe-file (asdf:system-source-file :lys-python)))
+(ql:register-local-projects)
+(format t "QL-FIND: ~S~%" (ql-dist:find-system "lys-python"))
+(sb-ext:exit :code 0)

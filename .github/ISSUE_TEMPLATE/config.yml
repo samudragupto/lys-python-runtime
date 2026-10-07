@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/samudragupto/lys-python-runtime/discussions
+    about: Ask theoretical, language design, or general architecture questions.
+  - name: Security Vulnerability Reporting
+    url: mailto:security@lyspython.org
+    about: Report sensitive memory safety or foreign bridge vulnerabilities privately.

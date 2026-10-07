@@ -1,0 +1,29 @@
+flowchart TD
+    subgraph MacroDefinition["Macro Definition Phase"]
+        DEF["define-python-macro name (args) body"] --> REG_FN["register-macro(name, expander, priority, doc)"]
+        REG_FN --> REG_TABLE["*global-macro-registry* Hash Table<br/>(Priority-Sorted, Versioned)"]
+    end
+
+    subgraph ExpansionEngine["Expansion Engine (macroexpand-fixpoint)"]
+        IN_NODE(["AST Node n, Depth D, Visited Digests"]) --> DEPTH_CHK{"Depth > Depth Limit?"}
+        DEPTH_CHK -- Yes --> DEPTH_ERR["Signal expansion-depth-exceeded"]
+        DEPTH_CHK -- No --> DIGEST_CHK{"Digest in Visited Digests?"}
+        DIGEST_CHK -- Yes --> CYCLE_ERR["Signal expansion-cycle-detected"]
+        DIGEST_CHK -- No --> OP_LOOKUP["Lookup operator in *global-macro-registry*"]
+
+        REG_TABLE -.-> OP_LOOKUP
+
+        OP_LOOKUP --> FOUND{"Macro Found?"}
+        FOUND -- Yes --> EXPAND_STEP["Execute Expander Function: (macroexpand-1)"]
+        EXPAND_STEP --> RECORD_TRACE["Push to *expansion-trace* (step, before, after)"]
+        RECORD_TRACE --> RECURSE["macroexpand-fixpoint(expanded, Depth + 1, digests)"]
+        RECURSE --> IN_NODE
+
+        FOUND -- No --> TRAVERSE["Recursively Expand All Children: (macroexpand-all)"]
+        TRAVERSE --> OUT_NODE(["Irreducible Expanded AST Node"])
+    end
+
+    subgraph TraceConsumer["Introspection Consumer"]
+        RECORD_TRACE -.-> TRACE_DATA["*expansion-trace* Record"]
+        TRACE_DATA --> INSP["REPL Expansion Inspector"]
+    end

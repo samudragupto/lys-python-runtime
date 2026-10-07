@@ -1,0 +1,29 @@
+flowchart TD
+    subgraph ConventionalModel["Conventional Paradigm: Lisp Calls Python or Python Embeds Lisp"]
+        CONV_LISP["Host Language (Common Lisp)"] -->|Foreign Call / RPC| CONV_BRIDGE["FFI Boundary"]
+        CONV_BRIDGE -->|Invoke Immutable Function| CONV_PY["Target VM (CPython - Fixed Semantics)"]
+    end
+
+    subgraph SemanticInversion["LYSPYTHON Paradigm: Meta-Language Driven Execution"]
+        subgraph MetaLanguage["Meta-Language: Common Lisp (Defines Meaning)"]
+            DEF_MACRO["define-python-macro Definitions"]
+            MACRO_ENG["Lisp Macro Expansion Engine"]
+            DESUGAR_ENG["Canonical Desugaring & Hygiene"]
+            DEF_MACRO --> MACRO_ENG --> DESUGAR_ENG
+        end
+
+        subgraph ObjectLanguage["Object-Language: Python Surface Syntax (Target)"]
+            USER_CODE["Python Surface Code (Flexible Grammar)"]
+            SURF_AST["Surface AST (S-AST)"]
+            CANON_AST["Canonical AST (C-AST)"]
+            USER_CODE --> SURF_AST
+        end
+
+        subgraph ExecutionSlave["Execution Slave: CPython Virtual Machine"]
+            TARGET_VM["CPython Execution Target (Evaluates Lowered IR)"]
+        end
+
+        SURF_AST -->|Intercepted Before Execution| MACRO_ENG
+        DESUGAR_ENG --> CANON_AST
+        CANON_AST -->|Lowered to CPython IR| TARGET_VM
+    end

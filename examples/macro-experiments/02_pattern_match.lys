@@ -1,0 +1,13 @@
+# LYSPYTHON Macro Experiment 02: Pattern Matching Syntax
+# Demonstrates pattern matching desugared via macros into nested conditionals
+
+(block
+  (assign status_code 404)
+  # A pattern match construct defined by macro expansion
+  (if (== status_code 200)
+      (call print ("Status OK: Resource Retrieved"))
+      (if (== status_code 404)
+          (call print ("Status Not Found: Resource Missing"))
+          (if (== status_code 500)
+              (call print ("Status Error: Internal Server Failure"))
+              (call print ("Status Unknown"))))))

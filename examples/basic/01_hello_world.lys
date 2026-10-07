@@ -1,0 +1,10 @@
+# LYSPYTHON Example 01: Hello World and Primitive Bindings
+# Surface Python code executed through Common Lisp macro pipeline
+
+(block
+  (assign message "Hello from LYSPYTHON: Defined by Lisp, Executed on CPython")
+  (call print (message))
+  (assign x 10)
+  (assign y 20)
+  (assign total (+ x y))
+  (call print ("Calculated Total:" total)))

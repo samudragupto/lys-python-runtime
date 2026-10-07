@@ -1,0 +1,5 @@
+(asdf:clear-configuration)
+(asdf:clear-source-registry)
+(asdf:initialize-source-registry)
+(format t "PROBE-ASD: ~S~%" (probe-file (asdf:system-source-file :lys-python)))
+(sb-ext:exit :code 0)

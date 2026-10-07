@@ -1,0 +1,14 @@
+# LYSPYTHON Example 02: Control Flow Desugaring
+# Demonstrates while loop execution and conditional evaluation
+
+(block
+  (assign counter 0)
+  (assign accumulator 0)
+  (while (< counter 5)
+    (block
+      (assign accumulator (+ accumulator counter))
+      (assign counter (+ counter 1))
+      (if (== counter 3)
+          (call print ("Reached midpoint counter:" counter))
+          (call print ("Current counter:" counter)))))
+  (call print ("Final Accumulated Sum:" accumulator)))

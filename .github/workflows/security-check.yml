@@ -1,0 +1,40 @@
+name: Security & Hygiene Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 4 * * 1'
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Scan for Secret Leaks and Hardcoded Tokens
+        run: |
+          python -c "import os, sys, re
+          secret_pattern = re.compile(r'(?i)(api[_-]?key|secret[_-]?key|bearer\s+[a-z0-9_\-\.]+)')
+          leaks = []
+          for root, _, files in os.walk('.'):
+              if any(p in root for p in ['.git', '.venv', '__pycache__']):
+                  continue
+              for f in files:
+                  if f.endswith(('.lisp', '.asd', '.py', '.md', '.yml', '.yaml')):
+                      p = os.path.join(root, f)
+                      with open(p, 'r', encoding='utf-8', errors='ignore') as fp:
+                          for idx, line in enumerate(fp, 1):
+                              if secret_pattern.search(line) and 're.compile' not in line:
+                                  leaks.append(f'{p}:{idx}')
+          if leaks:
+              sys.exit(f'Security alert: Potential credentials found at: {leaks}')
+          print('Security hygiene scan passed.')"

@@ -53,8 +53,8 @@ MANIFEST
 # Virtual Environments
 .venv/
 venv/
-ENV/
-env/
+/ENV/
+/env/
 .env
 
 # Tree-sitter binaries and build artifacts

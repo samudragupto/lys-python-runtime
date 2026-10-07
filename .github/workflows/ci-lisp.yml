@@ -9,34 +9,41 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        lisp: [sbcl-bin]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Common Lisp environment
-        uses: 40ants/setup-lisp@v4
-        with:
-          lisp: ${{ matrix.lisp }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Verify ASDF System Loading
+      - name: Install Common Lisp (SBCL) and Libraries
         run: |
-          ros run --eval '(require :asdf)' \
-                  --eval '(asdf:load-asd (truename "lyspython.asd"))' \
-                  --eval '(asdf:load-system :lys-python)' \
-                  --eval '(uiop:quit 0)'
+          sudo apt-get update
+          sudo apt-get install -y sbcl libpython3-dev
+
+      - name: Install and Bootstrap Quicklisp
+        run: |
+          curl -O https://beta.quicklisp.org/quicklisp.lisp
+          sbcl --noinform --non-interactive \
+               --load quicklisp.lisp \
+               --eval '(quicklisp-quickstart:install)' \
+               --eval '(ql-util:without-prompting (ql:add-to-init-file))'
+          # Link current repository into quicklisp local-projects
+          mkdir -p ~/quicklisp/local-projects
+          ln -s "$GITHUB_WORKSPACE" ~/quicklisp/local-projects/lys-python
+
+      - name: Verify ASDF System Compilation and Loading
+        run: |
+          sbcl --noinform --non-interactive \
+               --eval '(ql:quickload :lys-python)' \
+               --eval '(format t "System :lys-python loaded successfully.~%")'
 
       - name: Run Test Suite
         run: |
-          ros run --eval '(require :asdf)' \
-                  --eval '(asdf:load-asd (truename "lyspython.asd"))' \
-                  --eval '(asdf:test-system :lys-python)' \
-                  --eval '(uiop:quit 0)'
+          sbcl --noinform --non-interactive \
+               --eval '(ql:quickload :lys-python)' \
+               --eval '(asdf:test-system :lys-python)'
+

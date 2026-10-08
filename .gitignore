@@ -87,3 +87,10 @@ repl_history.lys
 .lys_history
 scratch/
 tmp/
+
+# Graphify generated files
+.graphify/
+graphify/
+
+# Graphify generated output
+graphify-out/
